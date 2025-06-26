@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Internet</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="sidebar-title">
+                    <i class="fas fa-wifi"></i>
+                    Internet Manager
+                </h1>
+                <button class="sidebar-close" id="sidebarClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="menu-item active" data-section="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li class="menu-item" data-section="clients">
+                    <i class="fas fa-users"></i>
+                    <span>Clientes</span>
+                </li>
+                <li class="menu-item" data-section="installations">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Instalaciones</span>
+                </li>
+                <li class="menu-item" data-section="payments">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Pagos</span>
+                </li>
+                <li class="menu-item" data-section="invoices">
+                    <i class="fas fa-file-invoice"></i>
+                    <span>Facturas</span>
+                </li>
+                <li class="menu-item" data-section="access-points">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <span>PUNTOS DE ACCESO</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-content">
+                    <h2 class="page-title" id="pageTitle">Dashboard</h2>
+                    <p class="page-subtitle">Sistema de Gestión de Internet</p>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area" id="contentArea">
+                <!-- Dashboard Section -->
+                <section id="dashboard-section" class="content-section active">
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card stat-primary">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="totalClients">0</h3>
+                                <p class="stat-label">Total Clientes</p>
+                                <span class="stat-sublabel">Clientes registrados</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card stat-success">
+                            <div class="stat-icon">
+                                <i class="fas fa-broadcast-tower"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="activeAccessPoints">4</h3>
+                                <p class="stat-label">PUNTOS DE ACCESO</p>
+                                <span class="stat-sublabel">Activos</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card stat-purple">
+                            <div class="stat-icon">
+                                <i class="fas fa-network-wired"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="totalInstallations">0</h3>
+                                <p class="stat-label">Instalaciones</p>
+                                <span class="stat-sublabel">Total instaladas</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card stat-warning">
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="monthlyRevenue">$0</h3>
+                                <p class="stat-label">Ingresos Mensuales</p>
+                                <span class="stat-sublabel">Proyección actual</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Acciones Rápidas</h3>
+                            <p class="card-subtitle">Gestión rápida del sistema</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="actions-grid">
+                                <button class="btn btn-primary" onclick="showSection('clients')">
+                                    <i class="fas fa-user-plus"></i>
+                                    Nuevo Cliente
+                                </button>
+                                <button class="btn btn-success" onclick="showSection('installations')">
+                                    <i class="fas fa-tools"></i>
+                                    Nueva Instalación
+                                </button>
+                                <button class="btn btn-info" onclick="showSection('access-points')">
+                                    <i class="fas fa-broadcast-tower"></i>
+                                    Ver PUNTOS DE ACCESO
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Actividad Reciente</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="recentActivity" class="activity-list">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Clients Section -->
+                <section id="clients-section" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-actions">
+                                <div>
+                                    <h3 class="card-title">Gestión de Clientes</h3>
+                                    <p class="card-subtitle">Administra todos los clientes registrados</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="openModal('clientModal')">
+                                    <i class="fas fa-plus"></i>
+                                    Nuevo Cliente
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="search-container">
+                                <input type="text" id="clientSearch" placeholder="Buscar por nombre o teléfono..." class="search-input">
+                                <i class="fas fa-search search-icon"></i>
+                            </div>
+                            <div id="clientsGrid" class="clients-grid">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Installations Section -->
+                <section id="installations-section" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-actions">
+                                <div>
+                                    <h3 class="card-title">Gestión de Instalaciones por Punto de Acceso</h3>
+                                    <p class="card-subtitle">Control de instalaciones organizadas por punto de acceso</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="openModal('installationModal')">
+                                    <i class="fas fa-plus"></i>
+                                    Nueva Instalación
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="filter-container">
+                                <select id="installationFilter" class="select-input">
+                                    <option value="all">Todas las instalaciones</option>
+                                    <option value="pendiente">Pendientes</option>
+                                    <option value="instalado_completo">Instaladas</option>
+                                    <option value="presenta_fallas">Con Fallas</option>
+                                    <option value="suspendido">Suspendidas</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Instalaciones por Punto de Acceso -->
+                            <div id="installationsByAccessPoint" class="installations-by-access-point">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Payments Section -->
+                <section id="payments-section" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-actions">
+                                <div>
+                                    <h3 class="card-title">Gestión de Pagos</h3>
+                                    <p class="card-subtitle">Control de pagos mensuales</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="openModal('paymentModal')">
+                                    <i class="fas fa-plus"></i>
+                                    Registrar Pago
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div id="paymentsContainer" class="payments-container">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Invoices Section -->
+                <section id="invoices-section" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-actions">
+                                <div>
+                                    <h3 class="card-title">Gestión de Facturas</h3>
+                                    <p class="card-subtitle">Genera y administra facturas</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="openModal('invoiceModal')">
+                                    <i class="fas fa-plus"></i>
+                                    Nueva Factura
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div id="invoicesContainer" class="invoices-container">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Access Points Section -->
+                <section id="access-points-section" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-actions">
+                                <div>
+                                    <h3 class="card-title">PUNTOS DE ACCESO</h3>
+                                    <p class="card-subtitle">Gestión de los 4 PUNTOS DE ACCESO con routers Mikrotik</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="openModal('accessPointModal')">
+                                    <i class="fas fa-plus"></i>
+                                    Nuevo PUNTO DE ACCESO
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div id="accessPointsGrid" class="access-points-grid">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Client Modal (Simplificado) -->
+    <div id="clientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Agregar Nuevo Cliente</h3>
+                <button class="modal-close" onclick="closeModal('clientModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="clientForm" class="modal-body">
+                <div class="form-group">
+                    <label for="clientNombre">Nombre Completo *</label>
+                    <input type="text" id="clientNombre" name="nombre" required placeholder="Ej: Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label for="clientTelefono">Número de Teléfono *</label>
+                    <input type="tel" id="clientTelefono" name="telefono" required placeholder="Ej: 5551234567">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('clientModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Guardar Cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Installation Modal (Completo) -->
+    <div id="installationModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 class="modal-title" id="installationModalTitle">Nueva Instalación</h3>
+                <button class="modal-close" onclick="closeModal('installationModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="installationForm" class="modal-body" enctype="multipart/form-data">
+                <input type="hidden" id="installationId" name="id">
+                
+                <div class="form-section">
+                    <h4 class="form-section-title">Información Básica</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="installationClient">Cliente *</label>
+                            <select id="installationClient" name="client_id" required>
+                                <option value="">Seleccionar cliente</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="installationAccessPoint">Punto de Acceso *</label>
+                            <select id="installationAccessPoint" name="access_point_id" required>
+                                <option value="">Seleccionar punto de acceso</option>
+                                <option value="1">AP-NORTE - Punto Norte</option>
+                                <option value="2">AP-SUR - Punto Sur</option>
+                                <option value="3">AP-ESTE - Punto Este</option>
+                                <option value="4">AP-OESTE - Punto Oeste</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="installationDireccion">Dirección</label>
+                            <textarea id="installationDireccion" name="direccion" rows="2" placeholder="Dirección completa de la instalación"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="installationCoordenadas">Coordenadas</label>
+                            <input type="text" id="installationCoordenadas" name="coordenadas" placeholder="Lat, Lng (Ej: 19.4326, -99.1332)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="form-section-title">Plan y Facturación</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="installationPlan">Plan *</label>
+                            <select id="installationPlan" name="plan" required onchange="updatePlanPrice()">
+                                <option value="">Seleccionar plan</option>
+                                <option value="4_megas" data-price="20.00">4 Megas - $20.00</option>
+                                <option value="5_megas" data-price="25.00">5 Megas - $25.00</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="installationPrecioPlan">Precio del Plan *</label>
+                            <input type="number" id="installationPrecioPlan" name="precio_plan" step="0.01" required readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="installationDiaPago">Día de Pago Mensual *</label>
+                        <input type="number" id="installationDiaPago" name="dia_pago" min="1" max="31" required>
+                        <small class="form-help">Este día se usará como referencia para generar facturas mensuales</small>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="form-section-title">Datos del Router del Cliente</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="installationRouterMarca">Marca del Router</label>
+                            <input type="text" id="installationRouterMarca" name="router_marca" placeholder="Ej: TP-Link, Mercusys">
+                        </div>
+                        <div class="form-group">
+                            <label for="installationRouterModelo">Modelo del Router</label>
+                            <input type="text" id="installationRouterModelo" name="router_modelo" placeholder="Ej: Archer C20, AC12G">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="installationRouterMac">MAC del Router *</label>
+                            <input type="text" id="installationRouterMac" name="router_mac" placeholder="00:11:22:33:44:55" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="installationRouterIpLocal">IP Local del Router</label>
+                            <input type="text" id="installationRouterIpLocal" name="router_ip_local" placeholder="192.168.1.1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="installationRouterUsuario">Usuario del Router</label>
+                            <input type="text" id="installationRouterUsuario" name="router_usuario" placeholder="admin">
+                        </div>
+                        <div class="form-group">
+                            <label for="installationRouterPassword">Password del Router</label>
+                            <input type="text" id="installationRouterPassword" name="router_password" placeholder="Contraseña del router">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="form-section-title">Configuración de Conexión</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="installationUsuarioPPPOE">Usuario PPPOE *</label>
+                            <input type="text" id="installationUsuarioPPPOE" name="usuario_pppoe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="installationClavePPPOE">Clave PPPOE *</label>
+                            <input type="text" id="installationClavePPPOE" name="clave_pppoe" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="installationNombreWifi">Nombre WiFi</label>
+                            <input type="text" id="installationNombreWifi" name="nombre_wifi" placeholder="Internet_Cliente">
+                        </div>
+                        <div class="form-group">
+                            <label for="installationClaveWifi">Clave WiFi *</label>
+                            <input type="text" id="installationClaveWifi" name="clave_wifi" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="installationIpPublica">IP Pública</label>
+                        <input type="text" id="installationIpPublica" name="ip_publica" placeholder="IP pública asignada">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="form-section-title">Información de Instalación</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="installationFechaInstalacion">Fecha de Instalación *</label>
+                            <input type="date" id="installationFechaInstalacion" name="fecha_instalacion" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="installationEstado">Estado *</label>
+                            <select id="installationEstado" name="estado" required>
+                                <option value="pendiente">Pendiente</option>
+                                <option value="instalado_completo">Instalado Completo</option>
+                                <option value="presenta_fallas">Presenta Fallas</option>
+                                <option value="suspendido">Suspendido</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="installationFotos">Fotos de Instalación</label>
+                        <input type="file" id="installationFotos" name="fotos[]" multiple accept="image/*">
+                        <small class="form-help">Puedes seleccionar múltiples fotos</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="installationNotas">Notas Adicionales</label>
+                        <textarea id="installationNotas" name="notas" rows="3" placeholder="Observaciones, problemas encontrados, etc."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('installationModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        <span id="installationSubmitText">Guardar Instalación</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Access Point Modal -->
+    <div id="accessPointModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 class="modal-title">Nuevo PUNTO DE ACCESO</h3>
+                <button class="modal-close" onclick="closeModal('accessPointModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="accessPointForm" class="modal-body">
+                <div class="form-section">
+                    <h4 class="form-section-title">Información Básica</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="accessPointCodigo">Código *</label>
+                            <input type="text" id="accessPointCodigo" name="codigo" required placeholder="Ej: AP-NORTE">
+                        </div>
+                        <div class="form-group">
+                            <label for="accessPointUbicacion">Ubicación *</label>
+                            <input type="text" id="accessPointUbicacion" name="ubicacion" required placeholder="Descripción de la ubicación">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="accessPointCapacidad">Capacidad de Clientes</label>
+                        <input type="number" id="accessPointCapacidad" name="capacidad_clientes" value="50" min="1">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="form-section-title">Datos del Router Mikrotik</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="accessPointRouterMarca">Marca</label>
+                            <input type="text" id="accessPointRouterMarca" name="router_marca" value="Mikrotik" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="accessPointRouterModelo">Modelo *</label>
+                            <input type="text" id="accessPointRouterModelo" name="router_modelo" required placeholder="Ej: hAP ac², RB4011">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="accessPointRouterIp">IP del Router *</label>
+                            <input type="text" id="accessPointRouterIp" name="router_ip" required placeholder="192.168.1.10">
+                        </div>
+                        <div class="form-group">
+                            <label for="accessPointRouterMac">MAC del Router</label>
+                            <input type="text" id="accessPointRouterMac" name="router_mac" placeholder="00:11:22:33:44:55">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="accessPointRouterUsuario">Usuario *</label>
+                            <input type="text" id="accessPointRouterUsuario" name="router_usuario" required value="admin">
+                        </div>
+                        <div class="form-group">
+                            <label for="accessPointRouterPassword">Password *</label>
+                            <input type="text" id="accessPointRouterPassword" name="router_password" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="form-section-title">Estado y Notas</h4>
+                    <div class="form-group">
+                        <label for="accessPointEstado">Estado *</label>
+                        <select id="accessPointEstado" name="estado" required>
+                            <option value="activo">Activo</option>
+                            <option value="mantenimiento">Mantenimiento</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="accessPointNotas">Notas</label>
+                        <textarea id="accessPointNotas" name="notas" rows="3" placeholder="Observaciones adicionales"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('accessPointModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Guardar PUNTO DE ACCESO
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3 class="modal-title" id="confirmModalTitle">Confirmar Acción</h3>
+                <button class="modal-close" onclick="closeModal('confirmModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalMessage">¿Estás seguro de que quieres realizar esta acción?</p>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('confirmModal')">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmModalAction">
+                        <i class="fas fa-trash"></i>
+                        Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Client Success Modal -->
+    <div id="clientSuccessModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3 class="modal-title">Cliente Agregado</h3>
+            </div>
+            <div class="modal-body">
+                <div class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    <p>Cliente agregado exitosamente</p>
+                    <p class="client-name" id="addedClientName"></p>
+                </div>
+                <div class="success-actions">
+                    <button class="btn btn-primary" onclick="addInstallationForClient()">
+                        <i class="fas fa-tools"></i>
+                        Agregar Instalación
+                    </button>
+                    <button class="btn btn-outline" onclick="closeModal('clientSuccessModal')">
+                        Continuar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
